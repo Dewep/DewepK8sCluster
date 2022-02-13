@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: hello-argjolan
 spec:
+  type: ClusterIP
   selector:
     app: hello-argjolan
   ports:
@@ -33,6 +34,13 @@ spec:
           volumeMounts:
             - name: hello-argjolan-configs
               mountPath: /etc/nginx/conf.d
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
       volumes:
         - name: hello-argjolan-configs
           configMap:
