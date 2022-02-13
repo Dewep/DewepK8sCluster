@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-pa
+spec:
+  selector:
+    app: hello-pa
+  ports:
+    - protocol: "TCP"
+      port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-pa-deployment
+  labels:
+    app: hello-pa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-pa
+  template:
+    metadata:
+      labels:
+        app: hello-pa
+    spec:
+      containers:
+        - name: hello-pa
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: hello-pa-configs
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: hello-pa-configs
+          configMap:
+            name: hello-pa-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-pa-config
+data:
+  default.conf: |
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name  _;
+
+      location / {
+        add_header Content-Type text/plain;
+        return 200 "Can I have some brownies plz?";
+      }
+    }

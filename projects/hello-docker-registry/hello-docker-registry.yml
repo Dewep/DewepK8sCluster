@@ -1,0 +1,56 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-docker-registry-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - hello-docker-registry.k8s.dewep.net
+      secretName: hello-docker-registry-ingress-certs
+  rules:
+    - host: hello-docker-registry.k8s.dewep.net
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: hello-docker-registry
+                port:
+                  number: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-docker-registry
+spec:
+  selector:
+    app: hello-docker-registry
+  ports:
+    - protocol: "TCP"
+      port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-docker-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-docker-registry
+  template:
+    metadata:
+      labels:
+        app: hello-docker-registry
+    spec:
+      containers:
+        - name: hello-docker-registry
+          image: registry.k8s.dewep.net/paulbouwer/hello-kubernetes:1.8
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: regcred
