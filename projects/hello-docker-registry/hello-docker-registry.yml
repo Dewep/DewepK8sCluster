@@ -27,6 +27,7 @@ kind: Service
 metadata:
   name: hello-docker-registry
 spec:
+  type: ClusterIP
   selector:
     app: hello-docker-registry
   ports:
@@ -52,5 +53,14 @@ spec:
           image: registry.k8s.dewep.net/paulbouwer/hello-kubernetes:1.8
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
       imagePullSecrets:
         - name: regcred
+
+## Crée un PVC pour avoir de la persistence entre tes restarts de pods. Là si tu delete ton pod, tu perds tout :)

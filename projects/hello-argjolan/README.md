@@ -24,3 +24,5 @@ export POD_NAME=$(kubectl get pods -n kubernetes-dashboard -l "app.kubernetes.io
 echo https://127.0.0.1:8443/
 kubectl -n kubernetes-dashboard port-forward $POD_NAME 8443:8443
 ```
+
+# Mauvis readme?

@@ -17,7 +17,7 @@ ingress:
   annotations:
     # kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/proxy-body-size: "30720m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "30720m" # 👍 Bien trouvé, je me souciens avoir galéré pour trouver ça
   tls:
     - secretName: docker-registry-prod
       hosts:
